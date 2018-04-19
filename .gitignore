@@ -10,3 +10,6 @@
 *.cb
 *.cb2
 .*.lb
+*bbl
+*blg
+Script.synctex.gz
