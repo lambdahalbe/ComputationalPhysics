@@ -1,0 +1,93 @@
+\documentclass[english,a4paper,10pt,twoside, headsepline, bibliography=totocnumbered, listof=totocnumbered]{scrbook}
+
+% Language
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[german, english]{babel}
+
+% Math
+
+\usepackage{mathtools, amssymb, exscale, mathrsfs}
+\usepackage{nicefrac}
+\usepackage{units}
+\usepackage{esvect}
+
+\newcommand{\dd}{\!\text{d}}
+\newcommand{\ii}{\text{i}}
+
+\let\originalleft\left
+\let\originalright\right
+\renewcommand{\left}{\mathopen{}\mathclose\bgroup\originalleft}
+\renewcommand{\right}{\aftergroup\egroup\originalright}
+
+% New definition of square root:
+% it renames \sqrt as \oldsqrt
+\let\oldsqrt\sqrt
+% it defines the new \sqrt in terms of the old one
+\def\sqrt{\mathpalette\DHLhksqrt}
+\def\DHLhksqrt#1#2{%
+	\setbox0=\hbox{$#1\oldsqrt{#2\,}$}\dimen0=\ht0
+	\advance\dimen0-0.2\ht0
+	\setbox2=\hbox{\vrule height\ht0 depth -\dimen0}%
+	{\box0\lower0.4pt\box2}}
+
+% Layout
+
+\usepackage[onehalfspacing]{setspace}
+\usepackage{titling}
+\usepackage{lmodern}
+\usepackage[]{hyperref} % hidelinks to hide links :D
+\usepackage[a4paper, bindingoffset = 10mm]{geometry}
+\usepackage{graphicx}
+\usepackage[margin=10pt,font=small,labelfont=bf]{caption}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage[sort&compress]{cleveref}
+\usepackage{paralist}
+\usepackage{listings}
+\usepackage{rotating}
+\usepackage{pdfpages}
+\usepackage[percent]{overpic}
+\usepackage{layout}
+
+
+% Tikz
+
+\usepackage{tikz}
+\usetikzlibrary{backgrounds}
+%\usetikzlibrary{calc, arrows, decorations.markings, math, arrows.meta}
+
+%\setlength{\parindent}{0cm}
+\pagestyle{headings}
+\author{---}
+\title{Computational Physics: Materials Science}
+\date{\today}
+\hypersetup{
+  pdftitle=\thetitle von \theauthor,
+  pdfauthor=\theauthor,
+  colorlinks=false}
+
+%\KOMAoptions{BCOR=0mm}
+
+\begin{document}
+\selectlanguage{english}
+\maketitle
+
+\cleardoublepage
+
+\tableofcontents
+\pagenumbering{Roman}
+
+\chapter{Introduction}
+\pagenumbering{arabic}
+
+
+\listoffigures
+%\listoftables
+\bibliography{Chapters/literature}
+\bibliographystyle{unsrtdin}  % unsrtdin
+\end{document}
+
+
+
