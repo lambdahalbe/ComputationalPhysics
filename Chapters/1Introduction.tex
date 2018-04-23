@@ -91,9 +91,9 @@ We only need $Z_\text{conf}$ because $Z_\text{kin}$ is trivial:
 using $\int\dd x\ e^{-ax^2} = \sqrt{\frac{\pi}{a}}\Rightarrow Z_\text{kin} = \left(\frac{2m\pi}{\beta}\right)^N$ Partition function of the ideal gas)\\
 
 Unfortunately, the evaluation of $Z_\text{conf}$ is much harder. However, $\langle A \rangle$ is simpler to compute.\\
-We could try to use \textsc{Simpson}'s rule (or a similar approach):\\
+We could try to use \textsc{Simpson}'s rule (see \cref{pic:simpsons_rule}) (or a similar approach).\\
 
-\begin{figure}[!H]
+\begin{figure}[!h]
 \centering
 \begin{tikzpicture}
 \draw[<->] (0,2) node[left] {f$(x)$} -- (0,0) -- (4,0);
@@ -106,5 +106,68 @@ We could try to use \textsc{Simpson}'s rule (or a similar approach):\\
 \draw (.5,1.8) .. controls (1,0) and (2, 1.7) .. (3.5, 2);
 \draw[<->] (0.5, .2) -- node[above] {$h$} (1, .2);
 \end{tikzpicture}
-\caption{\textsc{Simpson}'s Rule}{$\int\limits_{x_0}^{x^n} \text{f}(x)\text{d} x\approx\frac{h}{3}\left[\text{f}(x_0) + 4\cdot\text{f}(x_1) + 2\cdot\text{f}(x_2)+4\cdot\text{f}(x_3)+\dots+4\cdot\text{f}(x_{n-1}) + \text{f}(x_n)\right]$}
+\caption{\textsc{Simpson}'s Rule}{$\int\limits_{x_0}^{x_n} f(x)\text{d} x\approx\frac{h}{3}\left[f(x_0) + 4\cdot f(x_1) + 2\cdot f(x_2)+4\cdot f(x_3)+\dots+4\cdot f(x_{n-1}) + f(x_n)\right]$}
+\label{pic:simpsons_rule}
 \end{figure}
+
+However, $\vec{r}^N$ is of \underline{very high dimension}.\\
+If we evaluate $A$ at $m$ points per dimension, we need to compute $m^{3N}$ values. Even for just 100 particles and just 5 points per dimension that is infeasible.\\
+$\Rightarrow$ We need a more efficient method.\\
+
+\underline{Random Sampling}\\
+We note that:
+\begin{align}
+	\int\limits_{a}^{b} f(x) \text{d}x &= (b-a)\underbrace{\langle f(x)\rangle}_{\parbox{.5cm}{\hspace*{-1cm}$\text{average of } f \text{ on } [a, b]$}}
+\end{align}
+
+$\Rightarrow$ If we randomly (and evenly distributed) draw points $x_i\in[a, b]$ and evaluate $f(x_i)$ we obtain an estimate:
+\begin{align}
+	\langle f \rangle_\text{est} &= \frac{1}{M} \sum\limits_{i=1}^{M}f(x_i)\\
+	I &= \lim\limits_{M\to\infty} (b-a)\frac{1}{M} \sum\limits_{i=1}^{M}f(x_i)
+\end{align}
+
+In high dimensions $\langle f \rangle_\text{est}$ converges much faster than any estimate based on sampling a regular grid.\\
+The error scales roughly as $\frac{1}{\sqrt{M}}$.
+\begin{align}
+	\int\limits_{a}^{b} f(x) \text{d}x &\approx (b-a) \langle f\rangle_\text{est} \pm (b-a) \sqrt{\frac{\langle f^2\rangle_\text{est}-\langle f \rangle_\text{est}^2}{M}}\\
+	\langle f^2\rangle_\text{est} &= \frac{1}{M} \sum\limits_{i=1}^M f(x_i)^2
+\end{align}
+
+This is \underline{not a rigorous statement}. The quality of the fit depends crucially on the details of the function $f$.\\
+
+However, the scaling with $\frac{1}{\sqrt{M}}$ holds independently of the dimension in which we pick the points $x_i$.\\
+Thus, unless $f$ is pathological, random sampling performs well in high dimensions.\\
+
+\underline{Exercise:}\\
+Compute the area of a circle with diameter 1.\\
+\begin{tikzpicture}
+		\draw (0,0) rectangle (2,2);
+		\draw (1,1) circle (1);
+		\foreach \x/\y in {0.2/0.7, 1.3/1.4, 1.9/.4, .7/.1} {
+		\filldraw (\x, \y) circle (.03);
+	}
+	\node[right] at (2.5, 1.5) {Randomly generate points in the square of lengths $1\times1$};
+	\node[right] at (2.5, 1) {$\frac{A_\circ}{A_\square}\approx\frac{\text{hits inside }\circ}{\text{tries}}$};
+\end{tikzpicture}
+Compare this approach to a grid-based method, go to higher dimension and study convergence.
+
+\underline{Importance Sampling}\\
+We can improve the quality of the estimate, if we ``weight'' the sampled points, i.e. if we do not draw uniformly.\\
+We consider $a=0,\ b=1$ (w.l.o.g.).
+\begin{align}
+	I &= \int\limits_0^1f(x)\text{d}x = \int\limits_0^1\omega(x)\frac{f(x)}{\omega(x)}\text{d}x \quad\text{for some} \underbrace{\omega(x)>0}_{\parbox{3.7cm}{$\Rightarrow u(x)\ \text{mon. increasing}$}}
+\end{align}
+
+We define $\omega(x) := \frac{\text{d}u(x)}{\text{d}x}$, $u(0)=0$, $u(1) = 1$\\
+$\Rightarrow \omega(x)$ is normalized on $[0, 1]$
+\begin{align}
+	\Rightarrow I &= \int\limits_0^1\dd u\ \frac{f(x(u))}{\omega(x(u))}
+\end{align}
+Now we draw points $u_i$ uniformly (instead of $x_i$)
+\begin{align}
+	\rightarrow I &\approx \frac{1}{M}\sum\limits_{i=1}^M\frac{f(x(u_i))}{\omega(x(u_i))}
+\end{align}
+Obviously, if $\omega\sim f$ we would need only one data point to evaluate $I$. (However, to construct $\omega$, we need to make sure that $\int\limits_0^1\omega(x)\text{d}x = 1$ for normalization, i.e. we would need to be able to solve $\int f(x)\text{d}x\dots$)\\
+Often we can approximate $f$ by a function $\omega$, which we can normalize analytically. Then importance sampling is very efficient.\\
+
+For the case of thermal averages, \textsc{Metropolis} and \textsc{Teller} suggested a different, but closely related approach:
