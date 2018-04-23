@@ -88,4 +88,23 @@ We only need $Z_\text{conf}$ because $Z_\text{kin}$ is trivial:
 	\Rightarrow \sqrt[N]{Z_\text{kin}} &=  \int\dd\vec{p}\ e^{-\beta\frac{\vec{p}^2}{2m}} \Leftrightarrow\sqrt[3N]{Z_\text{kin}} = \int\dd p\ e^{-\beta\frac{p^2}{2m}}
 \end{align}
 
-using $\int\dd x\ e^{-ax^2} = \sqrt{\frac{\pi}{a}}\Rightarrow Z_\text{kin} = \left(\frac{2m\pi}{\beta}\right)^N$ Partition function of the ideal gas)
+using $\int\dd x\ e^{-ax^2} = \sqrt{\frac{\pi}{a}}\Rightarrow Z_\text{kin} = \left(\frac{2m\pi}{\beta}\right)^N$ Partition function of the ideal gas)\\
+
+Unfortunately, the evaluation of $Z_\text{conf}$ is much harder. However, $\langle A \rangle$ is simpler to compute.\\
+We could try to use \textsc{Simpson}'s rule (or a similar approach):\\
+
+\begin{figure}[!H]
+\centering
+\begin{tikzpicture}
+\draw[<->] (0,2) node[left] {f$(x)$} -- (0,0) -- (4,0);
+\foreach \x in {0.5, 1,...,3.5} {
+\draw (\x, .05) -- (\x, -.05);
+}
+\foreach \x in {1,2,...,7} {
+\node[below] at (\x/2, -0.05) {$x_\x$};
+}
+\draw (.5,1.8) .. controls (1,0) and (2, 1.7) .. (3.5, 2);
+\draw[<->] (0.5, .2) -- node[above] {$h$} (1, .2);
+\end{tikzpicture}
+\caption{\textsc{Simpson}'s Rule}{$\int\limits_{x_0}^{x^n} \text{f}(x)\text{d} x\approx\frac{h}{3}\left[\text{f}(x_0) + 4\cdot\text{f}(x_1) + 2\cdot\text{f}(x_2)+4\cdot\text{f}(x_3)+\dots+4\cdot\text{f}(x_{n-1}) + \text{f}(x_n)\right]$}
+\end{figure}
